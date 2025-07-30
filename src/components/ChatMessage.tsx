@@ -65,11 +65,13 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
    */
   const handleExportSvg = () => {
     if (diagramRef.current) {
-      const svgText = diagramRef.current.innerHTML;
-      if (!svgText) {
+      // Safely get SVG content using outerHTML of the SVG element
+      const svgElement = diagramRef.current.querySelector('svg');
+      if (!svgElement) {
         console.error("No SVG content to export.");
         return;
       }
+      const svgText = svgElement.outerHTML;
       const blob = new Blob([svgText], { type: 'image/svg+xml' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -94,8 +96,10 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
         return;
       }
       
-      // Clear previous content
-      diagramRef.current.innerHTML = '';
+      // Clear previous content safely
+      while (diagramRef.current.firstChild) {
+        diagramRef.current.removeChild(diagramRef.current.firstChild);
+      }
       
       // Validate Mermaid script before rendering
       const script = mermaidMessage.mermaidScript.trim();
@@ -108,7 +112,17 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
       mermaid.render(diagramId, script)
         .then(({ svg }) => {
           if (diagramRef.current) {
-            diagramRef.current.innerHTML = svg;
+            // Clear previous content safely
+            while (diagramRef.current.firstChild) {
+              diagramRef.current.removeChild(diagramRef.current.firstChild);
+            }
+            // Parse SVG string safely using DOMParser
+            const parser = new DOMParser();
+            const svgDoc = parser.parseFromString(svg, 'image/svg+xml');
+            const svgElement = svgDoc.documentElement;
+            if (svgElement && !svgDoc.querySelector('parsererror')) {
+              diagramRef.current.appendChild(svgElement);
+            }
           }
         })
         .catch(error => {
@@ -126,27 +140,31 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
           });
           
           if (diagramRef.current) {
-            // Try to render a simplified version or show the raw script
-            const currentContent = diagramRef.current.innerHTML;
-            if (currentContent.includes('Validation Warnings')) {
-              // If we already have validation warnings, add rendering error
-              diagramRef.current.innerHTML = currentContent + `
-                <div class="text-red-400 p-3 rounded border border-red-500/30 bg-red-900/20 mt-3">
-                  <div class="font-medium mb-2">❌ Rendering Failed</div>
-                  <div class="text-sm">${mermaidMessage.error || 'Unable to render diagram due to syntax or rendering issues.'}</div>
-                  <div class="text-xs mt-2 text-gray-400">Raw script: ${script.substring(0, 200)}${script.length > 200 ? '...' : ''}</div>
-                </div>
-              `;
-            } else {
-              // Show rendering error with raw script
-              diagramRef.current.innerHTML = `
-                <div class="text-red-400 p-3 rounded border border-red-500/30 bg-red-900/20">
-                  <div class="font-medium mb-2">❌ Rendering Error</div>
-                  <div class="text-sm">${mermaidMessage.error || 'Unable to render diagram due to syntax or rendering issues.'}</div>
-                  <div class="text-xs mt-2 text-gray-400">Raw script: ${script.substring(0, 200)}${script.length > 200 ? '...' : ''}</div>
-                </div>
-              `;
+            // Clear previous content safely
+            while (diagramRef.current.firstChild) {
+              diagramRef.current.removeChild(diagramRef.current.firstChild);
             }
+            
+            // Create error message element safely using DOM methods
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'text-red-400 p-3 rounded border border-red-500/30 bg-red-900/20';
+            
+            const errorTitle = document.createElement('div');
+            errorTitle.className = 'font-medium mb-2';
+            errorTitle.textContent = '❌ Rendering Error';
+            
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'text-sm';
+            errorMessage.textContent = mermaidMessage.error || 'Unable to render diagram due to syntax or rendering issues.';
+            
+            const rawScript = document.createElement('div');
+            rawScript.className = 'text-xs mt-2 text-gray-400';
+            rawScript.textContent = `Raw script: ${script.substring(0, 200)}${script.length > 200 ? '...' : ''}`;
+            
+            errorDiv.appendChild(errorTitle);
+            errorDiv.appendChild(errorMessage);
+            errorDiv.appendChild(rawScript);
+            diagramRef.current.appendChild(errorDiv);
           }
         });
     }
