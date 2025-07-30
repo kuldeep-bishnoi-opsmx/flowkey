@@ -176,7 +176,7 @@ export const generateMermaidScriptFromConversation = async (
     // Attempt generation with retry logic
     for (let attempt = 1; attempt <= mermaidGenerationConfig.maxRetryAttempts; attempt++) {
       try {
-        console.log(`Mermaid generation attempt ${attempt}/${mermaidGenerationConfig.maxRetryAttempts}`);
+        console.log('Mermaid generation attempt %d/%d', attempt, mermaidGenerationConfig.maxRetryAttempts);
         
         const script = await attemptMermaidGeneration(conversationContent, attempt);
         
@@ -192,7 +192,7 @@ export const generateMermaidScriptFromConversation = async (
           console.log('Valid Mermaid script generated on attempt', attempt);
           return cleanedScript;
         } else {
-          console.log(`Generated script failed validation on attempt ${attempt}`);
+          console.log('Generated script failed validation on attempt %d', attempt);
           
           // If this is the last attempt, throw validation error
           if (attempt === mermaidGenerationConfig.maxRetryAttempts) {
@@ -201,7 +201,7 @@ export const generateMermaidScriptFromConversation = async (
         }
         
       } catch (error) {
-        console.error(`Attempt ${attempt} failed:`, error);
+        console.error('Attempt %d failed:', attempt, error);
         
         // If this is the last attempt, re-throw the error
         if (attempt === mermaidGenerationConfig.maxRetryAttempts) {
@@ -209,7 +209,7 @@ export const generateMermaidScriptFromConversation = async (
         }
         
         // For non-final attempts, continue to the next attempt
-        console.log(`Retrying with simpler approach (attempt ${attempt + 1})`);
+        console.log('Retrying with simpler approach (attempt %d)', attempt + 1);
       }
     }
 
