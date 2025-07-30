@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Perplexity-inspired Design System - Dark Theme
+All colors MUST be HSL for proper theming support.
+*/
+
+@layer base {
+  :root {
+    /* Dark Perplexity Theme */
+    --background: 210 11% 15%;
+    --foreground: 0 0% 95%;
+
+    --card: 210 11% 17%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 210 11% 17%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 180 100% 50%;
+    --primary-foreground: 210 11% 15%;
+
+    --secondary: 210 11% 20%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 210 11% 20%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 210 11% 22%;
+    --accent-foreground: 0 0% 95%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 95%;
+
+    --border: 210 11% 25%;
+    --input: 210 11% 20%;
+    --ring: 180 100% 50%;
+
+    --radius: 0.75rem;
+
+    /* Perplexity-specific design tokens */
+    --perplexity-bg: 210 11% 15%;
+    --perplexity-surface: 210 11% 17%;
+    --perplexity-surface-hover: 210 11% 20%;
+    --perplexity-border: 210 11% 25%;
+    --perplexity-text: 0 0% 95%;
+    --perplexity-text-muted: 0 0% 60%;
+    --perplexity-accent: 180 100% 50%;
+    --perplexity-accent-muted: 180 50% 40%;
+    
+    /* Chat message colors */
+    --chat-user-bg: 217 91% 60%;
+    --chat-user-text: 0 0% 100%;
+    --chat-user-timestamp: 217 91% 80%;
+    --chat-assistant-bg: 210 11% 17%;
+    --chat-assistant-text: 0 0% 95%;
+    --chat-assistant-timestamp: 0 0% 60%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--perplexity-accent)), hsl(var(--perplexity-accent-muted)));
+    --gradient-surface: linear-gradient(180deg, hsl(var(--perplexity-surface)), hsl(var(--perplexity-bg)));
+    
+    /* Shadows */
+    --shadow-soft: 0 4px 6px -1px hsl(210 11% 8% / 0.3);
+    --shadow-medium: 0 10px 15px -3px hsl(210 11% 8% / 0.4);
+    --shadow-strong: 0 25px 50px -12px hsl(210 11% 8% / 0.6);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+/* Component-specific styles and animations */
+@layer components {
+  .perplexity-container {
+    @apply bg-[hsl(var(--perplexity-bg))] text-[hsl(var(--perplexity-text))];
+  }
+  
+  .perplexity-surface {
+    @apply bg-[hsl(var(--perplexity-surface))] hover:bg-[hsl(var(--perplexity-surface-hover))];
+    transition: var(--transition-smooth);
+  }
+  
+  .perplexity-border {
+    @apply border-[hsl(var(--perplexity-border))];
+  }
+  
+  .perplexity-accent {
+    @apply text-[hsl(var(--perplexity-accent))];
+  }
+  
+  .perplexity-text-muted {
+    @apply text-[hsl(var(--perplexity-text-muted))];
+  }
+  
+  .search-input {
+    @apply bg-[hsl(var(--perplexity-surface))] border-[hsl(var(--perplexity-border))] 
+           text-[hsl(var(--perplexity-text))] placeholder:text-[hsl(var(--perplexity-text-muted))]
+           focus:border-[hsl(var(--perplexity-accent))] focus:ring-1 focus:ring-[hsl(var(--perplexity-accent))]
+           rounded-2xl px-4 py-3 w-full outline-none;
+    transition: var(--transition-smooth);
+  }
+  
+  .sidebar-icon {
+    @apply w-6 h-6 text-[hsl(var(--perplexity-text-muted))] hover:text-[hsl(var(--perplexity-text))]
+           transition-colors duration-200;
+  }
+  
+  .pro-badge {
+    @apply bg-[hsl(var(--perplexity-accent))] text-[hsl(var(--perplexity-bg))] 
+           text-xs font-semibold px-2 py-1 rounded-md;
+  }
+}
+
+/* Utility classes for animations */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
